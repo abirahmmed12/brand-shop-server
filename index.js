@@ -63,6 +63,9 @@ async function run() {
     const servicesCollection = client
       .db('foodiePie')
       .collection('services')
+    const cartCollection = client
+      .db('foodiePie')
+      .collection('services')
 
     // initial api 
     app.get('/', (req, res) => {
@@ -72,7 +75,6 @@ async function run() {
     // post data to db(create)
     app.post('/create-service', async (req, res) => {
       const data = req.body;
-
       const result = await servicesCollection.insertOne(data);
       console.log(result, 'result');
       res.send(result)
@@ -80,11 +82,29 @@ async function run() {
 
     // get all data from db(read)
     app.get('/create-service', async (req, res) => {
-      
-      const query = { };
+
+      const query = {};
       const cursor = await servicesCollection.find(query).toArray();
       res.send(cursor)
     })
+    // get all data from db(read)
+    app.get('/create-service/:id', async (req, res) => {
+      const id = req.params.id;
+
+      try {
+        const query = { _id: new ObjectId(id) };
+        const product = await servicesCollection.findOne(query);
+
+        if (product) {
+          res.json(product);
+        } else {
+          res.status(404).json({ message: 'Product not found' });
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+    });
     app.get('/create-service/:name', async (req, res) => {
       console.log(req.params);
       const query = { brand: req.params.name };
@@ -97,6 +117,28 @@ async function run() {
       const brands = await servicesCollection.find({}).project({ brand: 1 }).toArray()
       res.send(brands);
     })
+
+    const cartItems = [];
+
+    app.post('/add-to-cart', async (req, res) => {
+      const item = req.body;
+      const result = await cartCollection.insertOne(item)
+
+      res.send(result)
+      // cartItems.push(item);
+      // res.status(200).json({ message: 'Item added to cart' });
+    });
+
+
+    // Retrieve the user's cart items
+    app.get('/get-cart', async (req, res) => {
+      const id = req.query.id;
+      const query = {
+        userId: id
+      }
+      const result = await cartCollection.find(query).toArray()
+      res.send(result)
+    });
 
 
 
