@@ -163,12 +163,7 @@ async function run() {
     })
 
     // delete a student form db 
-    app.delete('/student/delete/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await studentDetailsCollection.deleteOne(query);
-      res.send(result);
-    })
+  
   }
   catch {
 
