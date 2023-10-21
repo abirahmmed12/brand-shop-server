@@ -149,18 +149,7 @@ async function run() {
 
 
     // update details 
-    app.put('/student/:id', async (req, res) => {
-      const id = req.params.id;
-      const doc = req.body;
-      console.log(doc);
-      const filter = { _id: new ObjectId(id) }
-      const option = { upsert: true };
-      const updatedDoc = {
-        $set: doc
-      }
-      const result = await studentDetailsCollection.updateOne(filter, updatedDoc, option)
-      res.send(result);
-    })
+    
 
     // delete a student form db 
   
