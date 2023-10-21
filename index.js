@@ -128,6 +128,12 @@ async function run() {
       // cartItems.push(item);
       // res.status(200).json({ message: 'Item added to cart' });
     });
+    app.delete('/add-to-cart/:id',async(req,res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await cartCollection.deleteOne(query)
+      res.send(result)
+    })
 
 
     // Retrieve the user's cart items
